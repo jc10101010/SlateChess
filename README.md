@@ -65,7 +65,7 @@ Quiescence search addresses the problem of evaluating positions with tactical co
 The static evaluation function scores a given board position based on various heuristics:
 
 - **Material Balance**: Counts the relative value of pieces on both sides.
-- **Positional Factors**: Includes considerations like piece mobility, king safety, and pawn structure.
+- **Positional Factors**: Includes considerations like piece mobility and king safety.
 - **Tactical Motifs**: Factors in tactical threats such as attacks on major pieces, checkmate threats, and exposed kings.
 
 This evaluation helps guide the engine's decision-making during the search.
