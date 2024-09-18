@@ -2,16 +2,14 @@ from NegamaxAlphaBetaMoveOrder import *
 import time
 
 #Board configuration
-BoardString = """
-8 0 0 0 12 0 0 8
+BoardString = """8 0 0 0 12 0 0 8
 7 10 7 0 0 7 10 7
 0 7 9 0 7 0 7 0
 0 4 0 0 0 0 4 0
 0 9 0 0 0 0 0 0
 0 0 0 1 0 1 0 3
 1 0 0 3 0 1 0 1
-0 0 2 0 6 0 0 2
-"""
+0 0 2 0 6 0 0 2"""
 
 #Parse the board string into a 2D list and reverse to match the board's orientation
 board = [[int(i) for i in line.split()] for line in BoardString.split("\n")[::-1]]
