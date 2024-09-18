@@ -1,72 +1,63 @@
 from ChessBoard import *
 from random import shuffle
 import time
+
+#Global variables to track move count and maximum search depth
 global count, maxDepth
 count = 0
+maxDepth = 3  #Depth for the negamax search
 
-maxDepth = 3
+#Negamax algorithm with alpha-beta pruning
 def negamax(board, depth, side, opposite, alpha, beta):
     global count, maxDepth
+
+    #Generate all legal moves for the current board state
     moves = GenerateLegalMoves(board, side, opposite, depth, maxDepth)
+    
+    #If a checkmate or stalemate condition is detected
     if moves == "C":
         return "C"
+
+    #If the maximum depth is reached, evaluate the board
     if depth == 0:
-        count += 1
+        count += 1  #Count the evaluation
         return EvaluateNegamax(board, side)
-    max = -10000000000
-    maxMove = ()
+
+    maxScore = -10000000000  #Initialize max score to a very low value
+    maxMove = ()  #Initialize max move
+
+    #Iterate over all possible moves
     for i in range(len(moves[0])):
+        #Recursively call negamax for the new board state after making the move
         score = negamax(Move(board, moves[0][i], moves[1][i]), depth-1, opposite, side, -beta, -alpha)
+        
+        #Skip checkmate branches
         if score == "C":
             continue
-        score = -score
+        
+        score = -score  #Flip the score for negamax
+        
+        #Alpha-beta pruning: if score exceeds beta, prune this branch
         if score >= beta:
             return beta
+        
+        #Update alpha if a new best score is found
         if score > alpha:
             alpha = score
-        if score > max:
-            max = score
+        
+        #Keep track of the best move found
+        if score > maxScore:
+            maxScore = score
             maxMove = (moves[0][i], moves[1][i])
+
+    #At the root of the search tree, return the best move
     if depth == maxDepth:
-        print(count)
-        print(maxMove, max)
+        print(count)  #Output the number of evaluated positions
+        print(maxMove, maxScore)  #Output the best move and its score
         return maxMove
-    if max == -10000000000:
+
+    #If no valid moves found, return a losing score
+    if maxScore == -10000000000:
         return -1000
-    return max
-BoardString = """
-8 9 10 11 12 10 9 8
-7 7 7 7 7 7 7 7
-0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0
-0 0 0 0 0 0 0 0
-1 1 1 1 1 1 1 1
-2 3 4 5 6 4 3 2"""
-
-BoardString = """
-8 0 10 8 0 0 12 0
-7 7 7 0 11 7 7 7
-0 0 9 0 0 0 9 0
-4 0 0 0 7 0 0 10
-0 0 1 2 0 1 0 0
-1 0 0 4 0 0 3 0
-0 1 1 0 5 1 0 1
-0 2 4 0 6 0 0 2"""
-
-#if depth == maxDepth:
-    #print(moves[0][i], moves[1][i], score)
-
-
-board = [ [int(i) for i in line.split()] for line in  BoardString.split("\n")[::-1]]
-alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
-move = ""
-
-	
-	
-startTime = time.time()
-minimaxMove = negamax(board, maxDepth, 1 , 2, -10000, 10000)
-board = Move(board, minimaxMove[0], minimaxMove[1])
-print((time.time() - startTime) *1000)
-print("\n\n")
-	
+    
+    return maxScore  #Return the best score found
